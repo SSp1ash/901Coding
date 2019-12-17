@@ -1,60 +1,53 @@
 #include<iostream>
 #include<string>
 using namespace std;
-int getOpPosition(int n,string x){
-	int temp=1;
-	int i=n+1;
-	while(i<x.size()&&temp!=0){
-		if(x[i]==')'){
-			temp--;
-			i++;
-			continue;
-		}
-		if(x[i]=='('){
-			temp++;
-			i++;
-			continue;
-		}
+int findBacket(string example,int i){
+	int j=1;i++;
+	while(j!=0){
+		if(example[i]=='(') j++;
+		if(example[i]==')') j--;
 		i++;
 	}
-	i--;
 	return i;
 }
-void get(string x){
-	for(int i=0;i<x.size();i++){
-		if(x[i]=='('){
-			int end=getOpPosition(i,x);
-			get(x.substr(i+1,end-i-1));
-			if(i==0||x[i-1]>='9'||x[i-1]<='0'){
-				
-			}else{
-				for(int t=1;t<(x[i-1])-'0';t++){
-					get(x.substr(i+1,end-i-1));
-				}
+void open(string input){
+	int len=input.size();
+	int i=0;
+	while(i<len){
+		if(input[i]=='('){
+			int sum=1;
+			int end=findBacket(input,i);
+			if(i>0&&input[i-1]>='0'&&input[i-1]<='9'){
+				sum=input[i-1]-'0';
+			}
+			while(sum--){
+				open(input.substr(i+1,end-2-(i+1)+1));      //end为括号后一位下标，i为括号下标 
 			}
 			i=end;
 			continue;
 		}
-		if(x[i]>='0'&&x[i]<='9'&&x[i+1]>='a'&&x[i+1]<='z'){
-			for(int t=0;t<x[i]-'0';t++){
-				cout<<x[i+1];
+		if(input[i]>='a'&&input[i]<='z'){
+			int sum=1;
+			if(i>0&&input[i-1]>='0'&&input[i-1]<='9'){
+				sum=input[i-1]-'0';
+			}
+			while(sum--){
+				cout<<input[i];
 			}
 			i++;
 			continue;
 		}
-		else if(x[i]>='a'&&x[i]<='z'){
-			cout<<x[i];
-			if(i==x.size()-1) return;
-		}
+		i++;
+		continue;
 	}
 }
 int main(){
 	int n;
 	cin>>n;
 	while(n--){
-		string example;
-		cin>>example;
-		get(example);
+		string input;
+		cin>>input;
+		open(input);
 		cout<<endl;
 	}
 }
